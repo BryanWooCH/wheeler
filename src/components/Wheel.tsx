@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Box, Button, Modal, Paper, Stack, Typography } from "@mui/material";
 import {
+  breakerPinOrbitSx,
+  breakerPinSx,
   celebrationEffectsLayerSx,
   celebrationOverlaySx,
   centerSpinButtonSx,
@@ -12,8 +14,10 @@ import {
   fireworkRaysSx,
   fireworkRingSx,
   type FireworkBurst,
-  Pointer,
   type ResponsiveSize,
+  topFlapperArmSx,
+  topFlapperTipSx,
+  topFlapperWrapSx,
   wheelAreaSx,
   wheelFrameSx,
   wheelLabelContainerSx,
@@ -54,6 +58,18 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
   const [isSpinning, setIsSpinning] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState<string | null>(null);
   const [celebrationOpen, setCelebrationOpen] = React.useState(false);
+  const [flapperAngle, setFlapperAngle] = React.useState(0);
+  const breakerPinCount = React.useMemo(
+    () => Math.max(values.length * 2, 24),
+    [values.length],
+  );
+  const wheelFrameRef = React.useRef<HTMLDivElement | null>(null);
+  const lastPinBucketRef = React.useRef<number | null>(null);
+  const rafIdRef = React.useRef<number | null>(null);
+  const kickTimeoutRef = React.useRef<number | null>(null);
+  const lastKickAtRef = React.useRef(0);
+  const lastWheelAngleRef = React.useRef<number | null>(null);
+  const wheelSpeedRef = React.useRef(0);
 
   const colors = React.useMemo(() => {
     const count = values.length;
@@ -115,6 +131,119 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
     setCelebrationOpen(false);
   }, []);
 
+  const triggerFlapperKick = React.useCallback(() => {
+    const now = performance.now();
+    if (now - lastKickAtRef.current < 72) {
+      return;
+    }
+    lastKickAtRef.current = now;
+
+    const speed = wheelSpeedRef.current;
+    const intensity = Math.max(0.35, Math.min(speed / 2.6, 1));
+    const kickAngle = -(5 + 5 * intensity);
+    const settleMs = 120 + (1 - intensity) * 40;
+
+    if (kickTimeoutRef.current !== null) {
+      window.clearTimeout(kickTimeoutRef.current);
+    }
+
+    setFlapperAngle(kickAngle);
+    kickTimeoutRef.current = window.setTimeout(() => {
+      setFlapperAngle(0);
+      kickTimeoutRef.current = null;
+    }, settleMs);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isSpinning) {
+      if (rafIdRef.current !== null) {
+        window.cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      if (kickTimeoutRef.current !== null) {
+        window.clearTimeout(kickTimeoutRef.current);
+        kickTimeoutRef.current = null;
+      }
+      lastPinBucketRef.current = null;
+      lastWheelAngleRef.current = null;
+      wheelSpeedRef.current = 0;
+      setFlapperAngle(0);
+      return;
+    }
+
+    const pinStep = 360 / breakerPinCount;
+
+    const getWheelAngle = () => {
+      const element = wheelFrameRef.current;
+      if (!element) {
+        return 0;
+      }
+
+      const transform = window.getComputedStyle(element).transform;
+      if (!transform || transform === "none") {
+        return 0;
+      }
+
+      const matrixMatch = transform.match(/matrix\(([^)]+)\)/);
+      if (matrixMatch) {
+        const values = matrixMatch[1].split(",").map(Number);
+        const angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+        return (angle + 360) % 360;
+      }
+
+      const matrix3dMatch = transform.match(/matrix3d\(([^)]+)\)/);
+      if (matrix3dMatch) {
+        const values = matrix3dMatch[1].split(",").map(Number);
+        const angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+        return (angle + 360) % 360;
+      }
+
+      return 0;
+    };
+
+    const loop = () => {
+      const currentAngle = getWheelAngle();
+      if (lastWheelAngleRef.current !== null) {
+        let delta = currentAngle - lastWheelAngleRef.current;
+        if (delta > 180) {
+          delta -= 360;
+        } else if (delta < -180) {
+          delta += 360;
+        }
+        wheelSpeedRef.current = Math.abs(delta);
+      }
+      lastWheelAngleRef.current = currentAngle;
+
+      const pointerRelativeAngle = (360 - currentAngle + 0.0001) % 360;
+      const currentBucket = Math.floor(pointerRelativeAngle / pinStep);
+
+      if (
+        lastPinBucketRef.current !== null &&
+        currentBucket !== lastPinBucketRef.current
+      ) {
+        triggerFlapperKick();
+      }
+
+      lastPinBucketRef.current = currentBucket;
+      rafIdRef.current = window.requestAnimationFrame(loop);
+    };
+
+    rafIdRef.current = window.requestAnimationFrame(loop);
+
+    return () => {
+      if (rafIdRef.current !== null) {
+        window.cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      if (kickTimeoutRef.current !== null) {
+        window.clearTimeout(kickTimeoutRef.current);
+        kickTimeoutRef.current = null;
+      }
+      lastWheelAngleRef.current = null;
+      wheelSpeedRef.current = 0;
+    };
+  }, [breakerPinCount, isSpinning, triggerFlapperKick]);
+
   const confettiPieces: ConfettiPiece[] = React.useMemo(
     () =>
       Array.from({ length: 42 }, (_, index) => ({
@@ -122,7 +251,7 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
         left: `${Math.random() * 100}%`,
         size: 6 + Math.random() * 10,
         duration: 2.6 + Math.random() * 1.8,
-        delay: Math.random() * 1.6,
+        delay: Math.random() * 0.32,
         rotate: Math.random() * 360,
         color: ["#f6d365", "#fda085", "#a8edea", "#d4fc79", "#fbc2eb"][
           index % 5
@@ -152,20 +281,33 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
   );
 
   return (
-    <Paper
-      elevation={0}
-      sx={wheelPaperSx}
-    >
+    <Paper elevation={0} sx={wheelPaperSx}>
       <Stack spacing={2.5} alignItems="center" sx={wheelStackSx}>
-        <Typography variant="h6" component="h2" fontWeight={700}>
-          Wheel
-        </Typography>
         <Box sx={wheelAreaSx(scaledContentSize)}>
-          <Pointer />
+          <Box sx={topFlapperWrapSx}>
+            <Box sx={topFlapperArmSx(flapperAngle)}>
+              <Box sx={topFlapperTipSx} />
+            </Box>
+          </Box>
           <WheelFrame
+            ref={wheelFrameRef}
             onTransitionEnd={handleSpinEnd}
-            sx={wheelFrameSx(scaledContentSize, wheelBackground, rotation, isSpinning)}
+            sx={wheelFrameSx(
+              scaledContentSize,
+              wheelBackground,
+              rotation,
+              isSpinning,
+            )}
           >
+            {Array.from({ length: breakerPinCount }, (_, index) => {
+              const angle = (index * 360) / breakerPinCount;
+              return (
+                <Box key={`breaker-pin-${index}`} sx={breakerPinOrbitSx(angle)}>
+                  <Box sx={breakerPinSx} />
+                </Box>
+              );
+            })}
+
             {values.map((item, index) => {
               const angle = index * segmentAngle + segmentAngle / 2;
               return (
@@ -216,14 +358,14 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
 
           <Paper elevation={0} sx={winnerModalPaperSx}>
             <Typography
-              id="winner-title"
-              variant="h1"
-              sx={winnerTitleSx}
+              id="winner-description"
+              variant="h5"
+              sx={winnerDescriptionSx}
             >
-              {selectedValue}
+              🎉 Winner!
             </Typography>
-            <Typography id="winner-description" variant="h4" sx={winnerDescriptionSx}>
-              Selected
+            <Typography id="winner-title" variant="h1" sx={winnerTitleSx}>
+              {selectedValue}
             </Typography>
 
             <Button
