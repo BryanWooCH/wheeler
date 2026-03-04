@@ -30,7 +30,7 @@ const IndexPage: React.FC<PageProps> = () => {
         <Container maxWidth="lg">
           <Stack spacing={1.5} sx={{ mb: 3 }}>
             <Typography variant="h4" component="h2" fontWeight={700}>
-              Random Picker Wheel
+              Spin & Pick
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Add options and spin the wheel.

@@ -51,6 +51,65 @@ export const Pointer = styled(Box)`
   z-index: 2;
 `;
 
+export const topFlapperWrapSx = {
+  position: "absolute",
+  left: "50%",
+  top: -18,
+  transform: "translateX(-50%)",
+  width: 44,
+  height: 54,
+  pointerEvents: "none",
+  zIndex: 6,
+};
+
+export const topFlapperArmSx = (flapperAngle: number) => ({
+  position: "absolute",
+  left: "50%",
+  top: 0,
+  width: 7,
+  height: 30,
+  borderRadius: 999,
+  bgcolor: "#991b1b",
+  transformOrigin: "50% 4px",
+  transform: `translateX(-50%) rotate(${flapperAngle}deg)`,
+  boxShadow: "0 2px 4px rgba(0,0,0,0.32)",
+  transition: "transform 190ms cubic-bezier(0.16, 0.8, 0.22, 1)",
+});
+
+export const topFlapperTipSx = {
+  position: "absolute",
+  left: "50%",
+  top: 24,
+  transform: "translateX(-50%)",
+  width: 14,
+  height: 12,
+  background: "#dc2626",
+  clipPath: "polygon(50% 100%, 0 0, 100% 0)",
+  filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.28))",
+};
+
+export const breakerPinOrbitSx = (angle: number) => ({
+  position: "absolute",
+  inset: 0,
+  transform: `rotate(${angle}deg)`,
+  transformOrigin: "center",
+  pointerEvents: "none",
+  zIndex: 3,
+});
+
+export const breakerPinSx = {
+  position: "absolute",
+  left: "50%",
+  top: 2,
+  transform: "translateX(-50%)",
+  width: 11,
+  height: 11,
+  borderRadius: "50%",
+  bgcolor: "#d4a72c",
+  boxShadow:
+    "0 0 0 1px rgba(255,255,255,0.35) inset, 0 1px 1px rgba(0,0,0,0.28)",
+};
+
 export const wheelPaperSx = {
   p: 3,
   border: "1px solid",
@@ -102,6 +161,7 @@ export const wheelLabelTextSx = {
   position: "absolute",
   left: 0,
   top: -96,
+  fontSize: { xs: "1.03rem", sm: "1.15rem" },
   lineHeight: 1.2,
   display: "inline-block",
   transform: "translate(0, -50%) rotate(-90deg)",
@@ -114,8 +174,8 @@ export const centerSpinButtonSx = {
   left: "50%",
   top: "50%",
   transform: "translate(-50%, -50%)",
-  minWidth: 112,
-  height: 112,
+  minWidth: 100,
+  height: 100,
   borderRadius: "50%",
   textTransform: "none",
   zIndex: 4,
@@ -140,7 +200,7 @@ export const celebrationEffectsLayerSx = {
   zIndex: 1,
   "@keyframes confettiFall": {
     "0%": { transform: "translate3d(0, -48vh, 0)", opacity: 0 },
-    "10%": { opacity: 1 },
+    "3%": { opacity: 1 },
     "100%": {
       transform: "translate3d(0, 140vh, 0)",
       opacity: 0.75,
