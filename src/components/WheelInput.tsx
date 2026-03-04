@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Box, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 type ResponsiveSize = {
   xs: number;
@@ -26,6 +33,32 @@ const WheelInput: React.FC<WheelInputProps> = ({
     md: 420,
   };
 
+  const optionLines = React.useMemo(
+    () =>
+      value
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+    [value],
+  );
+
+  const handleShuffle = React.useCallback(() => {
+    if (optionLines.length < 2) {
+      return;
+    }
+
+    const shuffled = [...optionLines];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [
+        shuffled[swapIndex],
+        shuffled[index],
+      ];
+    }
+
+    onChange(shuffled.join("\n"));
+  }, [onChange, optionLines]);
+
   return (
     <Paper
       elevation={0}
@@ -38,9 +71,26 @@ const WheelInput: React.FC<WheelInputProps> = ({
       }}
     >
       <Stack spacing={2} sx={{ height: "100%" }}>
-        <Typography variant="h6" component="h2" fontWeight={700}>
-          Options
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="h6" component="h2" fontWeight={700}>
+            Options
+          </Typography>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={handleShuffle}
+            disabled={optionLines.length < 2}
+            sx={{ textTransform: "none", borderRadius: 999 }}
+          >
+            Shuffle
+          </Button>
+        </Box>
         <Box
           sx={{
             flex: 1,
