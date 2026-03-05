@@ -93,7 +93,7 @@ const Wheel: React.FC<WheelProps> = ({ items, onResult, contentSize }) => {
   const finalizeSpin = React.useCallback(
     (finalRotation: number) => {
       const normalized = ((finalRotation % 360) + 360) % 360;
-      const pointerAngle = (360 - normalized + 0.0001) % 360;
+      const pointerAngle = (360 - normalized + segmentAngle / 2 + 0.0001) % 360;
       const index = Math.floor(pointerAngle / segmentAngle) % values.length;
       const pickedValue = values[index];
 
