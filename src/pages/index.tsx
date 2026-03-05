@@ -75,4 +75,4 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage;
 
-export const Head: HeadFC = () => <title>Picker Wheel</title>;
+export const Head: HeadFC = () => <title>Spin & Pick</title>;

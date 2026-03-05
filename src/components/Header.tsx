@@ -7,7 +7,7 @@ const Header: React.FC = () => {
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ minHeight: 72 }}>
           <Typography variant="h6" component="h1" fontWeight={700}>
-            Picker Wheel
+            Spin the Wheel!
           </Typography>
         </Toolbar>
       </Container>
