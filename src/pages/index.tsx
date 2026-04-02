@@ -23,10 +23,16 @@ const IndexPage: React.FC<PageProps> = () => {
   }, [optionsText]);
 
   return (
-    <Stack sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+    <Stack
+      sx={{
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        overflowX: "clip",
+      }}
+    >
       <Header />
 
-      <Box component="main" sx={{ flex: 1, py: 4 }}>
+      <Box component="main" sx={{ flex: 1, py: 4, overflowX: "clip" }}>
         <Container maxWidth="lg">
           <Stack spacing={1.5} sx={{ mb: 3 }}>
             <Typography variant="h4" component="h2" fontWeight={700}>
@@ -46,18 +52,20 @@ const IndexPage: React.FC<PageProps> = () => {
             sx={{
               display: "grid",
               gap: 3,
+              width: "100%",
+              minWidth: 0,
               gridTemplateColumns: { xs: "1fr", md: "1.4fr 1fr" },
               alignItems: "stretch",
             }}
           >
-            <Box sx={{ height: "100%" }}>
+            <Box sx={{ height: "100%", minWidth: 0 }}>
               <Wheel
                 items={options}
                 onResult={(value) => setLastPicked(value)}
                 contentSize={panelContentSize}
               />
             </Box>
-            <Box sx={{ height: "100%" }}>
+            <Box sx={{ height: "100%", minWidth: 0 }}>
               <WheelInput
                 value={optionsText}
                 onChange={setOptionsText}

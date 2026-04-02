@@ -139,7 +139,8 @@ export const wheelFrameSx = (
   isSpinning: boolean,
 ) => ({
   width: scaledContentSize,
-  height: scaledContentSize,
+  height: "auto",
+  aspectRatio: "1 / 1",
   maxWidth: "100%",
   backgroundImage: wheelBackground,
   transform: `rotate(${rotation}deg)`,
