@@ -3,6 +3,7 @@ import type { HeadFC, PageProps } from "gatsby";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Seo from "../components/Seo";
 import Wheel from "../components/Wheel";
 import WheelInput from "../components/WheelInput";
 
@@ -83,4 +84,11 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage;
 
-export const Head: HeadFC = () => <title>Spin & Pick</title>;
+export const Head: HeadFC = () => (
+  <Seo
+    title="Spin & Pick"
+    description="Create a custom list, spin the wheel, and instantly pick a winner for meals, teams, chores, and decisions."
+    pathname="/"
+    type="website"
+  />
+);
