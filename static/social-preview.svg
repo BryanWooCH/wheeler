@@ -1,0 +1,52 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B2B4A" />
+      <stop offset="1" stop-color="#127C91" />
+    </linearGradient>
+    <linearGradient id="wheelGrad" x1="350" y1="175" x2="850" y2="455" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6C85A" />
+      <stop offset="1" stop-color="#F08A4B" />
+    </linearGradient>
+    <filter id="softShadow" x="0" y="0" width="1200" height="630" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="26" flood-color="#042035" flood-opacity="0.34" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <g opacity="0.2">
+    <circle cx="1020" cy="-20" r="220" fill="#52D1B8" />
+    <circle cx="-70" cy="590" r="220" fill="#2D8DA3" />
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="86" y="74" width="1028" height="482" rx="28" fill="#0E3A57" fill-opacity="0.72" />
+  </g>
+
+  <g transform="translate(135 112)">
+    <circle cx="210" cy="203" r="176" fill="url(#wheelGrad)" />
+    <circle cx="210" cy="203" r="132" fill="#0F3B5A" fill-opacity="0.7" />
+    <circle cx="210" cy="203" r="28" fill="#FDF4D8" />
+
+    <path d="M210 47L232 129H188L210 47Z" fill="#FDF4D8" />
+    <path d="M354 203L272 225V181L354 203Z" fill="#FDF4D8" />
+    <path d="M210 359L188 277H232L210 359Z" fill="#FDF4D8" />
+    <path d="M66 203L148 181V225L66 203Z" fill="#FDF4D8" />
+
+    <path d="M314 99L250 154L224 128L314 99Z" fill="#FDF4D8" fill-opacity="0.9" />
+    <path d="M314 307L224 278L250 252L314 307Z" fill="#FDF4D8" fill-opacity="0.9" />
+    <path d="M106 307L170 252L196 278L106 307Z" fill="#FDF4D8" fill-opacity="0.9" />
+    <path d="M106 99L196 128L170 154L106 99Z" fill="#FDF4D8" fill-opacity="0.9" />
+
+    <path d="M390 120L426 203L390 286" stroke="#FDF4D8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <g transform="translate(510 168)">
+    <text x="0" y="66" fill="#FDF4D8" font-size="74" font-family="Avenir Next,Segoe UI,Arial,sans-serif" font-weight="800" letter-spacing="1.5">Spin and Pick</text>
+    <text x="0" y="138" fill="#D9F3F8" font-size="34" font-family="Avenir Next,Segoe UI,Arial,sans-serif" font-weight="500">Fast wheel for teams, meals, and tasks</text>
+
+    <rect x="0" y="182" width="352" height="74" rx="37" fill="#F6C85A" />
+    <text x="36" y="230" fill="#173A54" font-size="35" font-family="Avenir Next,Segoe UI,Arial,sans-serif" font-weight="800">wheeler.vercel.app</text>
+  </g>
+</svg>
